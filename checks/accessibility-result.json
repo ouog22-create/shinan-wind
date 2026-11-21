@@ -1,0 +1,34 @@
+[
+  {
+    "page": "",
+    "violations": []
+  },
+  {
+    "page": "greeting/",
+    "violations": []
+  },
+  {
+    "page": "location/",
+    "violations": []
+  },
+  {
+    "page": "overview/",
+    "violations": []
+  },
+  {
+    "page": "progress/",
+    "violations": []
+  },
+  {
+    "page": "community/",
+    "violations": []
+  },
+  {
+    "page": "community/news/",
+    "violations": []
+  },
+  {
+    "page": "admin/",
+    "violations": []
+  }
+]

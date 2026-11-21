@@ -1,0 +1,9 @@
+[
+  "13 news: 12+1 pagination; script title renders as text",
+  "Admin news create and safe text rendering",
+  "Admin unpublish saves published=false",
+  "Admin progress create",
+  "Admin progress edit and delete",
+  "Admin current stage save",
+  "Image conversion: {\"type\": \"image/webp\", \"size\": 4062, \"width\": 1600, \"height\": 1200}"
+]
