@@ -1,0 +1,1 @@
+{"name":"shinan-wind","private":true,"scripts":{"build:sdk":"esbuild src/firebase.js --bundle --minify --format=esm --outfile=assets/js/firebase.js"},"dependencies":{"firebase":"12.6.0"},"devDependencies":{"esbuild":"0.25.12"}}

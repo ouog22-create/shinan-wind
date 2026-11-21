@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /shinan-wind/admin/
+Sitemap: https://ouog22-create.github.io/shinan-wind/sitemap.xml

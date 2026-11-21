@@ -1,0 +1,14 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{folder}/{file} {
+      allow read: if folder in ['news', 'certificates'];
+      allow delete: if request.auth != null
+                    && request.auth.uid in ['hCzWmAlwyWVeNVYnl1CblkMsXkW2'];
+      allow create, update: if request.auth != null
+                   && request.auth.uid in ['hCzWmAlwyWVeNVYnl1CblkMsXkW2']
+                   && request.resource.size < 1 * 1024 * 1024
+                   && request.resource.contentType.matches('image/(jpeg|png|webp)');
+    }
+  }
+}
