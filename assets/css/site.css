@@ -166,11 +166,9 @@ body.is-sub .gnb:not(.is-solid):not(.is-open){background:rgba(255,255,255,.55);b
 .permits b{font-size:1.0625rem;line-height:1.45;letter-spacing:-.02em}
 .permits span{font-size:.875rem;color:var(--muted)}
 .certs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem}
-.cert{width:100%;padding:0;border:0;background:none;cursor:zoom-in;text-align:left;display:grid;gap:.75rem}
-.cert img{width:100%;height:auto;aspect-ratio:3/4;object-fit:contain;background:var(--surface);border-radius:var(--card-r);padding:1rem;transition:box-shadow .3s}
-.cert:hover img{box-shadow:0 .4rem 2rem rgba(28,28,30,.12)}
-.cert span{display:flex;justify-content:space-between;align-items:center;gap:.5rem;font-weight:600;font-size:.9375rem}
-.cert span .icon{color:var(--muted)}
+.cert{display:grid;align-content:space-between;gap:2.5rem;min-height:12rem;padding:1.75rem 1.5rem;border-radius:var(--card-r);background:var(--surface)}
+.cert .icon{width:2rem;height:2rem;color:var(--primary);stroke-width:1.5}
+.cert b{font-size:1.125rem;line-height:1.45;letter-spacing:-.02em}
 .process-head{text-align:center;display:grid;justify-items:center;gap:2rem}
 .process-head h2{font-size:clamp(1.5rem,2.6vw,2.25rem);line-height:1.45;letter-spacing:-.03em;font-weight:800}
 .tl2{position:relative;margin-top:5rem}
@@ -288,7 +286,7 @@ body.modal-open{overflow:hidden}
   .process-head h2 br{display:none}
   .news-card{flex-wrap:wrap;gap:.5rem;padding:1.5rem 0}
   .news-title{flex-basis:100%;font-size:1.125rem}.news-arrow{display:none}
-  .certs{gap:1rem}.cert span{font-size:.875rem}
+  .certs{gap:1rem}.cert{min-height:9.5rem;gap:1.5rem;padding:1.25rem}.cert b{font-size:1rem}
   .footer{padding-block:4.5rem 6rem}.footer-grid{grid-template-columns:1fr;grid-template-areas:"copy" "nav" "info";row-gap:3rem}
   .ft-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.ft-nav a{font-size:1.0625rem}
   .to-top{width:3rem;height:3rem;bottom:1rem}
@@ -297,7 +295,6 @@ body.modal-open{overflow:hidden}
 
 /* 실제 사이트 전용: 데이터 상태·버튼형 페이지 이동 */
 .empty{padding:2.5rem 0;color:var(--muted);list-style:none}
-.certs>.empty{grid-column:1/-1;padding:0}
 .news-list>.empty{padding:2.5rem .5rem;border-bottom:1px solid var(--line)}
 .pager{align-items:center}
 .pager button{display:inline-flex;align-items:center;justify-content:center;width:3rem;height:3rem;border:0;border-radius:50%;background:none;cursor:pointer}

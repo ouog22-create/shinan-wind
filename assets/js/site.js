@@ -19,7 +19,7 @@ function onScroll(){header.classList.toggle('is-solid',scrollY>8);toTop.classLis
 toTop.addEventListener('click',()=>{scrollTo({top:0,behavior:reduce.matches?'auto':'smooth'});$('#content').focus({preventScroll:true})});
 
 // 서브페이지 페이드업: 화면 하단 92% 선을 넘은 항목을 차례로 보여 준다
-const FU='.intro>*,.visit>*,.o-intro,.facts>div,.panel>.panel-title,.permits>li,.certs>li,.certs>.empty,.process-head,.tl2-group,.news-list>li,.pager,.article-head,.article .prose>*,.article-foot';
+const FU='.intro>*,.visit>*,.o-intro,.facts>div,.panel>.panel-title,.permits>li,.certs>li,.process-head,.tl2-group,.news-list>li,.pager,.article-head,.article .prose>*,.article-foot';
 let fuItems=[];
 function checkFU(){fuItems=fuItems.filter(el=>{if(el.getBoundingClientRect().top<innerHeight*.92){el.classList.add('in');return false}return true})}
 function fadeUp(){
@@ -82,15 +82,6 @@ function introUpdate(){
   const rise=clamp(1-y/vh),fade=clamp((y-1.2*vh)/(.8*vh));
   si.style.setProperty('--rise',rise.toFixed(4));si.style.setProperty('--fade',fade.toFixed(4));
   header.classList.toggle('on-dark',rise*vh<=header.offsetHeight&&r.bottom>header.offsetHeight);
-}
-
-// 인증서 확대 보기(목록은 데이터로 바뀌므로 위임 처리)
-const dlg=$('#cert-dialog');let opener;
-if(dlg){
-  document.addEventListener('click',e=>{const b=e.target.closest('[data-cert]');if(!b)return;opener=b;dlg.querySelector('h2').textContent=b.dataset.cert;const img=dlg.querySelector('img');img.src=b.dataset.src;img.alt=b.dataset.cert+' 확대 이미지';dlg.showModal();document.body.classList.add('modal-open');dlg.querySelector('.close').focus()});
-  dlg.querySelector('.close').addEventListener('click',()=>dlg.close());
-  dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
-  dlg.addEventListener('close',()=>{document.body.classList.remove('modal-open');opener&&opener.focus()});
 }
 
 function all(){onScroll();fill();tlUpdate();ctaFill();introUpdate();checkFU()}
