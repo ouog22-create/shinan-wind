@@ -1,7 +1,7 @@
 export function node(tag,text,cls){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;}
 export function safeImage(url){try{const u=new URL(url,location.href);return ['https:','http:'].includes(u.protocol)?u.href:'';}catch{return '';}}
 export function image(url,alt){const el=node('img');el.src=safeImage(url);el.alt=alt||'';el.loading='lazy';el.addEventListener('error',()=>{el.replaceWith(node('p','이미지를 불러올 수 없습니다.','note'));});return el;}
-export function timeline(items,target){target.replaceChildren();if(!items.length){target.append(node('p','등록된 추진경과가 없습니다.','empty'));return;}items.forEach(x=>{const row=node('div',undefined,'timeline-row');row.append(node('time',x.date),node('p',x.text));target.append(row);});}
+export function timeline(items,target,badge){target.replaceChildren();if(!items.length){target.append(node('p','등록된 추진경과가 없습니다.','empty'));return;}items.forEach(x=>{const row=node('div',undefined,'timeline-row');row.append(node('span',x.date,'date'),node('p',x.text),node('span',badge,'badge'));target.append(row);});}
 const menu=document.getElementById('menu-toggle'),nav=document.getElementById('main-nav');
 menu?.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'메뉴 닫기':'메뉴 열기');nav.classList.toggle('open',open);});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu?.getAttribute('aria-expanded')==='true'){menu.click();menu.focus();}});
