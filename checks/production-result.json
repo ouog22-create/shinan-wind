@@ -1,9 +1,0 @@
-{
-  "url": "https://ouog22-create.github.io/shinan-wind/",
-  "pages": "8/8 HTTP 200",
-  "liveFirestore": "home 3, history 10, plans 6",
-  "news": "empty list and missing document handled",
-  "admin": "Firebase Auth initialization and noindex confirmed",
-  "anonymousWrite": "permission-denied",
-  "pageErrors": []
-}
