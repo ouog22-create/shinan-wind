@@ -1,3 +1,5 @@
+import {originalCertificates} from './certificates.js';
+import {renderNewsBody} from './news-body.js';
 // 공개 페이지 데이터: 관리 대상인 주민상생 뉴스만 Firestore에서 불러와 시안 디자인 마크업으로 그린다.
 // (추진경과·인증서는 tools/build_site.py가 페이지에 고정해 넣는다)
 import {db,collection,query,where,limit,getDocs,getDoc,doc,orderBy,startAfter} from './firebase.js';
@@ -39,14 +41,38 @@ async function newsDetail(){
   const x=snap.data(),t=el('time',null,ymd(x.publishedAt));t.dateTime=isoDate(x.publishedAt);head.append(el('h2',null,x.title),t);
   const prose=el('div','prose');
   if(x.imageUrl){const f=el('figure');f.append(img(x.imageUrl,x.imageAlt));prose.append(f)}
-  String(x.body||'').split(/\n{2,}/).filter(Boolean).forEach(p=>prose.append(el('p',null,p)));
+  renderNewsBody(prose,x.body,x.bodyFormat);
   art.replaceChildren(head,prose,foot);document.title=x.title+' | 주민상생 | 신안어의 해상풍력발전사업';
+}
+
+async function certificates(){
+  const list=document.querySelector('.certs');
+  if(!list)return;
+  const [originals,snapshot]=await Promise.all([
+    originalCertificates(),
+    getDocs(query(collection(db,'certificates'),where('published','==',true)))
+  ]);
+  const entries=[...originals,...rows(snapshot)].sort((a,b)=>a.order-b.order);
+  const fileIcon=list.querySelector('svg');
+  list.replaceChildren(...entries.map(entry=>{
+    const item=el('li','cert');
+    if(fileIcon)item.append(fileIcon.cloneNode(true));
+    const url=entry.imageUrl && safeUrl(entry.imageUrl);
+    if(url){
+      const link=el('a',null,entry.title);
+      link.href=url;
+      item.append(link);
+    }else item.append(el('b',null,entry.title));
+    return item;
+  }));
+  if(!entries.length)list.append(el('li','empty','등록된 인증서가 없습니다.'));
 }
 
 function fail(e){console.error(e);
   const msg='정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.';
   for(const id of ['news-list']){const t=document.getElementById(id);if(t)t.replaceChildren(el('li','empty',msg))}
+  const certList=document.querySelector('.certs');if(certList)certList.replaceChildren(el('li','empty',msg));
   const a=document.getElementById('news-detail');if(a){const h=el('header','article-head');h.append(el('h2',null,msg));a.replaceChildren(h)}
 }
-const jobs={'/community':newsList,'/news':newsDetail};
+const jobs={'/overview':certificates,'/community':newsList,'/news':newsDetail};
 (jobs[route]?jobs[route]():Promise.resolve()).then(refresh).catch(e=>{fail(e);refresh()});

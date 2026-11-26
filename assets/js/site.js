@@ -57,20 +57,17 @@ function tlUpdate(){
   steps.forEach(s=>{const b=s.getBoundingClientRect();s.classList.toggle('is-on',b.top+b.height*.35<c)});
 }
 
-// 메인 추진경과 → 마무리 문구: 고정 화면 안에서 배경 크로스페이드(단위: 화면 높이)
-const stage=$('.m-flow'),cta=stage&&stage.querySelector('.m-cta'),hist=stage&&stage.querySelector('.m-history'),ctaChars=cta?[...cta.querySelectorAll('.ch')]:[];
+// 마무리 영역을 고정하고 스크롤 진행에 따라 긴 바다 그라데이션을 이동한다.
+const stage=$('.m-flow'),cta=stage&&stage.querySelector('.m-cta');
 function ctaFill(){
   if(!stage)return;
-  const hh=header.offsetHeight,r=stage.getBoundingClientRect(),y=-r.top/innerHeight;
-  const k=(a,b)=>clamp((y-a)/(b-a));
-  const dk=k(.5,1.1),out=k(1,1.3),inn=k(1.3,1.6);
-  stage.style.setProperty('--dk',dk.toFixed(3));
-  hist.querySelector('.wrap').style.opacity=(1-out).toFixed(3);hist.classList.toggle('is-gone',out>=.999);
-  const c=Math.round(28+227*dk);hist.style.color=`rgb(${c},${c},${Math.round(30+225*dk)})`;hist.classList.toggle('is-dark',dk>.5);
-  cta.querySelector('.cta-inner').style.opacity=inn.toFixed(3);
-  header.classList.toggle('on-dark',dk>.5&&r.top<=hh&&r.bottom>hh&&footer.getBoundingClientRect().top>hh);
-  const n=reduce.matches?ctaChars.length:Math.round(k(1.5,2.1)*ctaChars.length);
-  ctaChars.forEach((ch,i)=>ch.classList.toggle('on',i<n));
+  const r=stage.getBoundingClientRect();
+  const progress=clamp(-r.top/Math.max(1,stage.offsetHeight-innerHeight));
+  stage.style.setProperty('--ocean-shift',(-progress*66.666).toFixed(3)+'%');
+  cta.classList.toggle('is-entered',r.top<=1||reduce.matches);
+  const overOcean=r.top<=header.offsetHeight&&r.bottom>header.offsetHeight&&footer.getBoundingClientRect().top>header.offsetHeight;
+  header.classList.toggle('on-dark',overOcean);
+  header.classList.toggle('on-ocean',overOcean);
 }
 
 // 서브 인트로: 미디어 상승(--rise 1→0) → 흰 타이틀 퇴장(--fade 0→1)

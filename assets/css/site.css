@@ -32,17 +32,16 @@ h1[tabindex="-1"]:focus{outline:none}
 .gnb-nav a[aria-current=page]{color:var(--primary)}
 .menu-btn{display:none;width:3rem;height:3rem;align-items:center;justify-content:center;border:0;background:transparent;cursor:pointer;border-radius:99rem}
 .menu-btn .i-close,.menu-btn[aria-expanded=true] .i-open{display:none}.menu-btn[aria-expanded=true] .i-close{display:block}
-/* GNB 배경: 유리 재질(뒤 배경 블러+채도, 아래쪽 빛 맺힘). 히어로 위에서는 어둡게 비친 유리, 그 외에는 밝은 유리 */
-.gnb{-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);background:rgba(20,18,20,.16);box-shadow:inset 0 -1px 0 rgba(255,255,255,.18)}
-.gnb.is-solid,.gnb.is-open{background:rgba(255,255,255,.68);box-shadow:inset 0 -1px 0 rgba(255,255,255,.6),0 1px 0 rgba(28,28,30,.08)}
-body.is-sub .gnb:not(.is-solid):not(.is-open){background:rgba(255,255,255,.55);box-shadow:inset 0 -1px 0 rgba(255,255,255,.6)}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.gnb{background:transparent}.gnb.is-solid,.gnb.is-open{background:var(--white)}}
+/* 스크롤하거나 메뉴를 열었을 때 유리 배경을 표시한다. */
+.gnb.is-solid,.gnb.is-open{-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);background:rgba(255,255,255,.68);box-shadow:inset 0 -1px 0 rgba(255,255,255,.6),0 1px 0 rgba(28,28,30,.08)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.gnb.is-solid,.gnb.is-open{background:var(--white)}}
 .gnb.on-hero:not(.is-solid):not(.is-open){color:var(--white)}
 .gnb.on-hero:not(.is-solid):not(.is-open) .gnb-nav a[aria-current=page]{color:var(--white)}
 .gnb.on-hero:not(.is-solid):not(.is-open) :is(a,button):focus-visible{outline-color:var(--white)}
 .menu-foot{display:none}
 /* 어두운 영역(메인 마지막 CTA·푸터) 위: 어두운 유리 + 흰 글자 */
-.gnb.on-dark:not(.is-open){background:rgba(20,18,20,.32);box-shadow:inset 0 -1px 0 rgba(255,255,255,.12);color:var(--white)}
+.gnb.is-solid.on-dark:not(.is-open){background:rgba(20,18,20,.32);box-shadow:inset 0 -1px 0 rgba(255,255,255,.12);color:var(--white)}
+.gnb.is-solid.on-ocean:not(.is-open){background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .gnb.on-dark:not(.is-open) .gnb-nav a[aria-current=page]{color:var(--white)}
 .gnb.on-dark:not(.is-open) :is(a,button):focus-visible{outline-color:var(--white)}
 
@@ -85,15 +84,11 @@ body.is-sub .gnb:not(.is-solid):not(.is-open){background:rgba(255,255,255,.55);b
 .sec-head{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:2rem}
 /* 메인 추진경과: 레퍼런스(ewideplus Organization) — 작은 라벨 + 큰 날짜·연회색 설명 행, 행 hover 시 크림슨.
    섹션 끝에 오면 배경이 흰색→검정으로 디졸브되며 글자가 반전되고, 이어지는 어두운 CTA로 넘어간다 */
-/* 추진경과 → CTA: 한 화면(스테이지)을 고정한 채 제자리에서 배경이 밝은색→어두운 바람 그라데이션으로 크로스페이드,
-   추진경과 글자는 흰색으로 바뀐 뒤 사라지고 CTA 문구가 나타난다(아래에서 올라오지 않음) */
-.m-flow{--dk:0;--out:0;position:relative;z-index:1;height:330svh}
-.ms-sticky{position:sticky;top:0;height:100svh;min-height:34rem;overflow:hidden;background:#FBFBFB}
-.m-history{position:absolute;inset:0;z-index:2;display:flex;align-items:center;padding-top:var(--header-h);color:var(--ink)}
+.m-history-section{position:relative;background:#fbfbfb;padding:6rem var(--gutter)}
+.m-flow{position:relative;z-index:1;height:300svh}
+.ms-sticky{position:sticky;top:0;height:100svh;overflow:hidden}
+.m-history{position:relative;color:var(--ink)}
 .m-history>.wrap{width:100%}
-.m-history.is-gone{visibility:hidden}
-/* 밝은 배경 레이어가 스크롤만큼 투명해지며(디졸브) 뒤에 고정된 어두운 CTA가 그대로 비친다 → 경계선 없이 이어짐 */
-.m-history>.wrap{opacity:calc(1 - var(--out))}
 .mh-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:3rem}
 .mh-bar h2{font-size:clamp(1.5rem,2.4vw,2.25rem);font-weight:700;letter-spacing:-.03em}
 .mh-bar .text-link{color:inherit}.mh-bar .text-link:hover{color:var(--primary)}
@@ -203,25 +198,35 @@ body.is-sub .gnb:not(.is-solid):not(.is-open){background:rgba(255,255,255,.55);b
 .article-foot{display:flex;justify-content:center;padding-top:2rem;border-top:1px solid var(--line)}
 
 /* footer */
- /* 메인 마지막 CTA: 화면 아래에 고정된 채 앞 섹션이 걷히면서 드러난다. 배경은 바람결처럼 흐르는 은은한 그라데이션 */
-.m-cta{position:absolute;inset:0;z-index:1;opacity:var(--dk);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--white);text-align:center;padding-inline:var(--gutter);
-  background:radial-gradient(120% 80% at 50% 120%,#2A1218 0%,transparent 60%),linear-gradient(180deg,#0B0A0C 0%,#121016 100%)}
-.m-cta::before,.m-cta::after{content:"";position:absolute;pointer-events:none;border-radius:50%;filter:blur(70px)}
-.m-cta::before{width:130%;height:46%;left:-15%;top:22%;background:linear-gradient(100deg,transparent 5%,rgba(220,20,60,.34) 35%,rgba(255,120,140,.12) 55%,transparent 85%);transform:rotate(-8deg);animation:wind-a 22s ease-in-out infinite alternate}
-.m-cta::after{width:120%;height:40%;left:-10%;top:48%;background:linear-gradient(80deg,transparent 10%,rgba(70,110,170,.30) 40%,rgba(160,190,230,.10) 60%,transparent 90%);transform:rotate(6deg);animation:wind-b 28s ease-in-out infinite alternate}
-@keyframes wind-a{from{transform:translateX(-7%) rotate(-8deg) scaleY(1)}to{transform:translateX(7%) rotate(-4deg) scaleY(1.25)}}
-@keyframes wind-b{from{transform:translateX(6%) rotate(6deg)}to{transform:translateX(-6%) rotate(2deg) scaleY(1.2)}}
-.cta-wind{position:absolute;inset:0;pointer-events:none}
-.gust{position:absolute;left:0;width:45%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);filter:blur(.5px);opacity:0;animation:gust 9s linear infinite}
-.g1{top:30%;animation-delay:0s}.g2{top:44%;width:35%;animation-delay:2.6s;animation-duration:11s}.g3{top:61%;animation-delay:5.1s}.g4{top:72%;width:30%;animation-delay:7.3s;animation-duration:12s}
-@keyframes gust{0%{transform:translateX(-110%);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(260%);opacity:0}}
-.cta-inner{position:relative;z-index:1;display:grid;justify-items:center;gap:3rem}
-.cta-title{font-size:clamp(1.75rem,3.6vw,3.25rem);font-weight:800;line-height:1.35;letter-spacing:-.035em}
-.cta-title .line{display:block}
-.cta-title .ch{color:rgba(255,255,255,.28);transition:color .35s ease-out}.cta-title .ch.on{color:var(--white)}
-.cta-btn{border-color:rgba(255,255,255,.7);color:var(--white);background:rgba(255,255,255,.04);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.cta-btn:hover{background:var(--white);color:var(--ink)}.cta-btn:focus-visible{outline-color:var(--white)}
-.footer{position:relative;z-index:1;background:var(--white);color:var(--ink);padding-block:7rem 4rem;border-top:1px solid var(--line)}
+/* 메인 마무리 영역 */
+.m-cta{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--white);text-align:center;padding:var(--header-h) var(--gutter) 3rem;
+  background:#07577e}
+.m-cta::before{content:"";position:absolute;top:0;left:0;width:100%;height:300%;pointer-events:none;background:linear-gradient(180deg,#fff 0%,#a1d3df 10%,#579eb9 20%,#397f9b 33%,#5596ad 66%,#75b1c2 100%);transform:translateY(var(--ocean-shift,0%))}
+.cta-inner{position:relative;z-index:1;width:100%;display:grid;justify-items:center;text-align:center;gap:3rem;will-change:transform,opacity}
+.cta-title{max-width:100%;font-size:clamp(3rem,5.6vw,6rem);font-weight:700;line-height:1.13;letter-spacing:-.055em;text-shadow:0 2px 32px rgba(5,65,94,.08)}
+.cta-title .line{display:block;opacity:0;transform:translateY(30px)}
+.m-cta.is-entered .cta-title .line{animation:cta-line-in .4s ease-out both}
+.m-cta.is-entered .cta-title .line:nth-child(2){animation-delay:.5s}
+.m-cta.is-entered .cta-title .cta-name{animation:cta-line-in .4s 1s ease-out both}
+@keyframes cta-line-in{to{opacity:1;transform:translateY(0)}}
+
+.cta-title .cta-name{font-size:clamp(1.25rem,2.1vw,2.1rem);font-weight:500;letter-spacing:-.035em;margin-top:2.25rem}
+@media(max-width:767px){
+ .m-cta{padding-bottom:2rem}
+ .cta-inner{gap:2rem}
+ .cta-title{max-width:100%}
+ .cta-title{font-size:clamp(2.8rem,10vw,4.8rem)}
+ .cta-title .cta-name{font-size:clamp(1rem,4.3vw,1.5rem);margin-top:1.75rem}
+
+}
+@media(prefers-reduced-motion:reduce){
+ .m-flow{height:auto}
+ .ms-sticky{position:relative}
+ .m-cta::before{transform:translateY(-33%)}
+
+ .m-cta .cta-title .line{opacity:1;transform:none}
+}
+.footer{position:relative;z-index:1;background:#f5f5f5;color:var(--ink);padding-block:7rem 4rem;border-top:1px solid var(--line)}
 .footer-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,28rem);grid-template-areas:"copy nav" ". info";row-gap:8rem;column-gap:3rem}
 .ft-copy{grid-area:copy;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-.04em;color:#000}
 .ft-nav{grid-area:nav;display:grid;gap:1.25rem;align-content:start}
@@ -291,7 +296,7 @@ body.modal-open{overflow:hidden}
   .ft-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.ft-nav a{font-size:1.0625rem}
   .to-top{width:3rem;height:3rem;bottom:1rem}
 }
-@media (prefers-reduced-motion:reduce){.m-statement .ch.hl{color:var(--primary)}.sub-intro{height:auto}.si-sticky{position:relative;height:auto;overflow:visible}.si-title.sub-top{position:relative;inset:auto;padding:calc(var(--header-h) + 5rem) var(--gutter) 4rem}.si-media{position:relative;height:70svh;transform:none}.si-title.si-light{display:none}.m-cta::before,.m-cta::after,.gust{animation:none}.cta-title .ch{color:var(--white)}.js .fu{opacity:1;transform:none}.js .tl2 .step:not(.is-on){opacity:1}.m-summary{height:auto}.m-stage,.m-summary.is-done .m-stage{transform:none}.m-reveal{position:static}.m-sticky{position:static;min-height:0;padding-block:var(--sec)}.m-statement .ch{color:var(--ink)}.m-reveal{opacity:1;transform:none;visibility:visible}*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){.m-statement .ch.hl{color:var(--primary)}.sub-intro{height:auto}.si-sticky{position:relative;height:auto;overflow:visible}.si-title.sub-top{position:relative;inset:auto;padding:calc(var(--header-h) + 5rem) var(--gutter) 4rem}.si-media{position:relative;height:70svh;transform:none}.si-title.si-light{display:none}.m-cta::before,.m-cta::after{animation:none}.cta-title .ch{color:var(--white)}.js .fu{opacity:1;transform:none}.js .tl2 .step:not(.is-on){opacity:1}.m-summary{height:auto}.m-stage,.m-summary.is-done .m-stage{transform:none}.m-reveal{position:static}.m-sticky{position:static;min-height:0;padding-block:var(--sec)}.m-statement .ch{color:var(--ink)}.m-reveal{opacity:1;transform:none;visibility:visible}*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 
 /* 실제 사이트 전용: 데이터 상태·버튼형 페이지 이동 */
 .empty{padding:2.5rem 0;color:var(--muted);list-style:none}
@@ -301,3 +306,5 @@ body.modal-open{overflow:hidden}
 .pager button:disabled{color:#B5AFB0;cursor:default}
 .pager [aria-current]{display:inline-flex;align-items:center;justify-content:center;width:3rem;height:3rem;border-radius:50%;font-weight:700;background:var(--primary);color:var(--white)}
 .article .prose p{white-space:pre-line}
+
+.article .prose ul{list-style:disc;padding-inline-start:1.5rem}
