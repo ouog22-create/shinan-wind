@@ -1,7 +1,7 @@
-import {originalCertificates} from './certificates.js';
+import {originalProgress} from './progress.js';
+import {originalCertificates,formatCertificateDate} from './certificates.js';
 import {renderNewsBody} from './news-body.js';
-// 공개 페이지 데이터: 관리 대상인 주민상생 뉴스만 Firestore에서 불러와 시안 디자인 마크업으로 그린다.
-// (추진경과·인증서는 tools/build_site.py가 페이지에 고정해 넣는다)
+// 관리자 저장 데이터를 공개 화면에 반영한다.
 import {db,collection,query,where,limit,getDocs,getDoc,doc,orderBy,startAfter} from './firebase.js';
 const route=document.body.dataset.page;
 const rows=s=>s.docs.map(d=>({id:d.id,...d.data()}));
@@ -52,7 +52,7 @@ async function certificates(){
     originalCertificates(),
     getDocs(query(collection(db,'certificates'),where('published','==',true)))
   ]);
-  const entries=[...originals,...rows(snapshot)].sort((a,b)=>a.order-b.order);
+  const entries=[...originals,...rows(snapshot)].filter(x=>x.published).sort((a,b)=>a.order-b.order);
   const fileIcon=list.querySelector('svg');
   list.replaceChildren(...entries.map(entry=>{
     const item=el('li','cert');
@@ -63,9 +63,23 @@ async function certificates(){
       link.href=url;
       item.append(link);
     }else item.append(el('b',null,entry.title));
+    if(entry.certifiedAt){const date=el('time','cert-date',formatCertificateDate(entry.certifiedAt));date.dateTime=entry.certifiedAt;item.append(date);}
     return item;
   }));
   if(!entries.length)list.append(el('li','empty','등록된 인증서가 없습니다.'));
+}
+
+async function progress(){
+  const timeline=document.querySelector('.tl2');if(!timeline)return;
+  const [originals,snapshot]=await Promise.all([originalProgress(),getDocs(query(collection(db,'progress'),where('published','==',true)))]);
+  const entries=[...originals,...rows(snapshot)].filter(x=>x.published).sort((a,b)=>(a.order??999)-(b.order??999)||(a.sortKey||'').localeCompare(b.sortKey||''));
+  const images=[...timeline.querySelectorAll('.tl2-img')].map(x=>x.cloneNode(true));
+  timeline.querySelectorAll('.tl2-group').forEach(x=>x.remove());
+  for(let i=0;i<entries.length;i+=4){const group=el('div','tl2-group'+(i%8?' is-flip':'')),list=el('ol','steps');list.start=i+1;
+    for(const x of entries.slice(i,i+4)){const item=el('li','step'+(x.type==='plan'?' is-plan':''));item.append(el('time',null,x.date),el('p',null,x.text),el('span','progress-state',x.type==='plan'?'미완료':'완료'));list.append(item);}
+    group.append(list);if(images[i/4%images.length])group.append(images[i/4%images.length].cloneNode(true));timeline.append(group);
+  }
+  if(!entries.length)timeline.append(el('p','empty','등록된 사업 추진 현황이 없습니다.'));
 }
 
 function fail(e){console.error(e);
@@ -74,5 +88,5 @@ function fail(e){console.error(e);
   const certList=document.querySelector('.certs');if(certList)certList.replaceChildren(el('li','empty',msg));
   const a=document.getElementById('news-detail');if(a){const h=el('header','article-head');h.append(el('h2',null,msg));a.replaceChildren(h)}
 }
-const jobs={'/overview':certificates,'/community':newsList,'/news':newsDetail};
+const jobs={'/overview':certificates,'/progress':progress,'/community':newsList,'/news':newsDetail};
 (jobs[route]?jobs[route]():Promise.resolve()).then(refresh).catch(e=>{fail(e);refresh()});

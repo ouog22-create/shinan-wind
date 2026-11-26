@@ -308,3 +308,5 @@ body.modal-open{overflow:hidden}
 .article .prose p{white-space:pre-line}
 
 .article .prose ul{list-style:disc;padding-inline-start:1.5rem}
+
+.cert-date{display:block;font-size:.875rem;color:#666;font-variant-numeric:tabular-nums}.progress-state{font-size:.8rem;color:#666}.step.is-plan .progress-state{color:#a84343}
